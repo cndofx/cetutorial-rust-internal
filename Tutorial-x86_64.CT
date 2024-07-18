@@ -110,6 +110,50 @@ dealloc(newmem)
         <Offset>10</Offset>
       </Offsets>
     </CheatEntry>
+    <CheatEntry>
+      <ID>19</ID>
+      <Description>"Step 9 Dave"</Description>
+      <ShowAsSigned>0</ShowAsSigned>
+      <VariableType>Float</VariableType>
+      <Address>"Tutorial-x86_64.exe"+325B10</Address>
+      <Offsets>
+        <Offset>8</Offset>
+        <Offset>888</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>20</ID>
+      <Description>"Step 9 Eric"</Description>
+      <ShowAsSigned>0</ShowAsSigned>
+      <VariableType>Float</VariableType>
+      <Address>"Tutorial-x86_64.exe"+325B10</Address>
+      <Offsets>
+        <Offset>8</Offset>
+        <Offset>890</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>21</ID>
+      <Description>"Step 9 HAL"</Description>
+      <ShowAsSigned>0</ShowAsSigned>
+      <VariableType>Float</VariableType>
+      <Address>"Tutorial-x86_64.exe"+325B10</Address>
+      <Offsets>
+        <Offset>8</Offset>
+        <Offset>898</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>22</ID>
+      <Description>"Step 9 KITT"</Description>
+      <ShowAsSigned>0</ShowAsSigned>
+      <VariableType>Float</VariableType>
+      <Address>"Tutorial-x86_64.exe"+325B10</Address>
+      <Offsets>
+        <Offset>8</Offset>
+        <Offset>8A0</Offset>
+      </Offsets>
+    </CheatEntry>
   </CheatEntries>
   <UserdefinedSymbols/>
 </CheatTable>
