@@ -1,23 +1,23 @@
-use std::{io::Write, time::Duration};
+use std::{ffi::c_void, time::Duration};
 
 use windows::{
     core::PCSTR,
     Win32::{
-        Foundation::{BOOL, HINSTANCE, HWND},
+        Foundation::{BOOL, HINSTANCE},
         System::{
             Console::{AllocConsole, FreeConsole},
             LibraryLoader::{FreeLibraryAndExitThread, GetModuleHandleA},
             SystemServices::DLL_PROCESS_ATTACH,
         },
-        UI::{
-            Input::KeyboardAndMouse::{
-                GetAsyncKeyState, VIRTUAL_KEY, VK_END, VK_NUMPAD1, VK_NUMPAD2, VK_NUMPAD3,
-                VK_NUMPAD4,
-            },
-            WindowsAndMessaging::{MessageBoxA, MESSAGEBOX_STYLE},
+        UI::Input::KeyboardAndMouse::{
+            GetAsyncKeyState, VIRTUAL_KEY, VK_END, VK_NUMPAD2, VK_NUMPAD3, VK_NUMPAD4, VK_NUMPAD5,
         },
     },
 };
+
+use mem::{deref_pointer_path, nop};
+
+mod mem;
 
 struct HModule(HINSTANCE);
 
@@ -61,6 +61,10 @@ unsafe fn main(hmodule: HModule) {
 
         if pressed(VK_NUMPAD4) {
             solve_step4(module_base);
+        }
+
+        if pressed(VK_NUMPAD5) {
+            solve_step5(module_base);
         }
 
         if pressed(VK_END) {
@@ -124,10 +128,21 @@ unsafe fn solve_step4(base: usize) {
     }
 }
 
+unsafe fn solve_step5(base: usize) {
+    println!("solving step 5");
+    let addr = base + 0x0002CB88;
+    if let Ok(_) = nop(addr as *mut c_void, 2) {
+        println!("nopped instructions");
+    } else {
+        println!("unable to nop instructions");
+    }
+}
+
 fn print_menu() {
     println!("Numpad 2: Solve step 2");
     println!("Numpad 3: Solve step 3");
     println!("Numpad 4: Solve step 4");
+    println!("Numpad 5: Solve step 5");
 }
 
 fn pcstr(str: &str) -> PCSTR {
@@ -136,16 +151,4 @@ fn pcstr(str: &str) -> PCSTR {
 
 fn pressed(key: VIRTUAL_KEY) -> bool {
     unsafe { GetAsyncKeyState(key.0 as i32) & 1 == 1 }
-}
-
-unsafe fn deref_pointer_path(base: usize, offsets: &[usize]) -> Option<usize> {
-    let mut addr = base;
-    for offset in offsets {
-        addr = *(addr as *const usize);
-        if addr == 0 {
-            return None;
-        }
-        addr += offset;
-    }
-    Some(addr)
 }
