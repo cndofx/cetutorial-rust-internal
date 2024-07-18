@@ -51,6 +51,65 @@
         <Offset>0</Offset>
       </Offsets>
     </CheatEntry>
+    <CheatEntry>
+      <ID>11</ID>
+      <Description>"Step 7 Health"</Description>
+      <ShowAsSigned>0</ShowAsSigned>
+      <VariableType>4 Bytes</VariableType>
+      <Address>"Tutorial-x86_64.exe"+325AE0</Address>
+      <Offsets>
+        <Offset>7E0</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>12</ID>
+      <Description>"Step 7 Script"</Description>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>define(address,"Tutorial-x86_64.exe"+2DB57)
+define(bytes,83 AE E0 07 00 00 01)
+
+[ENABLE]
+
+assert(address,bytes)
+alloc(newmem,$1000,"Tutorial-x86_64.exe"+2DB57)
+
+label(code)
+label(return)
+
+newmem:
+
+code:
+  // sub dword ptr [rsi+000007E0],01
+  add dword ptr [rsi+7E0],02
+  jmp return
+
+address:
+  jmp newmem
+  nop 2
+return:
+
+[DISABLE]
+
+address:
+  db bytes
+  // sub dword ptr [rsi+000007E0],01
+
+dealloc(newmem)
+</AssemblerScript>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>14</ID>
+      <Description>"Step 8 Value"</Description>
+      <ShowAsSigned>0</ShowAsSigned>
+      <VariableType>4 Bytes</VariableType>
+      <Address>"Tutorial-x86_64.exe"+325B00</Address>
+      <Offsets>
+        <Offset>18</Offset>
+        <Offset>0</Offset>
+        <Offset>18</Offset>
+        <Offset>10</Offset>
+      </Offsets>
+    </CheatEntry>
   </CheatEntries>
   <UserdefinedSymbols/>
 </CheatTable>
