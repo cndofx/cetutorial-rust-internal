@@ -11,6 +11,7 @@ use windows::{
         },
         UI::Input::KeyboardAndMouse::{
             GetAsyncKeyState, VIRTUAL_KEY, VK_END, VK_NUMPAD2, VK_NUMPAD3, VK_NUMPAD4, VK_NUMPAD5,
+            VK_NUMPAD6,
         },
     },
 };
@@ -65,6 +66,10 @@ unsafe fn main(hmodule: HModule) {
 
         if pressed(VK_NUMPAD5) {
             solve_step5(module_base);
+        }
+
+        if pressed(VK_NUMPAD6) {
+            solve_step6(module_base);
         }
 
         if pressed(VK_END) {
@@ -138,11 +143,25 @@ unsafe fn solve_step5(base: usize) {
     }
 }
 
+unsafe fn solve_step6(base: usize) {
+    println!("solving step 6");
+    if let Some(addr) = deref_pointer_path(base + 0x00325AD0, &[0x0]) {
+        println!("{addr:#010X}");
+        let addr = addr as *mut u32;
+        println!("value before: {}", *addr);
+        *addr = 5000;
+        println!("value after : {}", *addr);
+    } else {
+        println!("null pointer");
+    }
+}
+
 fn print_menu() {
     println!("Numpad 2: Solve step 2");
     println!("Numpad 3: Solve step 3");
     println!("Numpad 4: Solve step 4");
     println!("Numpad 5: Solve step 5");
+    println!("Numpad 6: Solve step 6");
 }
 
 fn pcstr(str: &str) -> PCSTR {
