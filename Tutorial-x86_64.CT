@@ -21,6 +21,26 @@
         <Offset>7F8</Offset>
       </Offsets>
     </CheatEntry>
+    <CheatEntry>
+      <ID>5</ID>
+      <Description>"Step 4 Health"</Description>
+      <ShowAsSigned>0</ShowAsSigned>
+      <VariableType>Float</VariableType>
+      <Address>"Tutorial-x86_64.exe"+325AA0</Address>
+      <Offsets>
+        <Offset>818</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>7</ID>
+      <Description>"Step 4 Ammo"</Description>
+      <ShowAsSigned>0</ShowAsSigned>
+      <VariableType>Double</VariableType>
+      <Address>"Tutorial-x86_64.exe"+325AA0</Address>
+      <Offsets>
+        <Offset>820</Offset>
+      </Offsets>
+    </CheatEntry>
   </CheatEntries>
   <UserdefinedSymbols/>
 </CheatTable>

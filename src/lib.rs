@@ -12,6 +12,7 @@ use windows::{
         UI::{
             Input::KeyboardAndMouse::{
                 GetAsyncKeyState, VIRTUAL_KEY, VK_END, VK_NUMPAD1, VK_NUMPAD2, VK_NUMPAD3,
+                VK_NUMPAD4,
             },
             WindowsAndMessaging::{MessageBoxA, MESSAGEBOX_STYLE},
         },
@@ -58,6 +59,10 @@ unsafe fn main(hmodule: HModule) {
             solve_step3(module_base);
         }
 
+        if pressed(VK_NUMPAD4) {
+            solve_step4(module_base);
+        }
+
         if pressed(VK_END) {
             running = false;
         }
@@ -97,9 +102,32 @@ unsafe fn solve_step3(base: usize) {
     }
 }
 
+unsafe fn solve_step4(base: usize) {
+    println!("solving step 4");
+    if let Some(health_addr) = deref_pointer_path(base + 0x00325AA0, &[0x818]) {
+        println!("{health_addr:#010X}");
+        let health_addr = health_addr as *mut f32;
+        println!("health before: {}", *health_addr);
+        *health_addr = 5000.0;
+        println!("health after : {}", *health_addr);
+    } else {
+        println!("null pointer");
+    }
+    if let Some(ammo_addr) = deref_pointer_path(base + 0x00325AA0, &[0x820]) {
+        println!("{ammo_addr:#010X}");
+        let ammo_addr = ammo_addr as *mut f64;
+        println!("ammo before: {}", *ammo_addr);
+        *ammo_addr = 5000.0;
+        println!("ammo after : {}", *ammo_addr);
+    } else {
+        println!("null pointer");
+    }
+}
+
 fn print_menu() {
     println!("Numpad 2: Solve step 2");
     println!("Numpad 3: Solve step 3");
+    println!("Numpad 4: Solve step 4");
 }
 
 fn pcstr(str: &str) -> PCSTR {
