@@ -11,7 +11,7 @@ use windows::{
         },
         UI::{
             Input::KeyboardAndMouse::{
-                GetAsyncKeyState, VIRTUAL_KEY, VK_END, VK_NUMPAD1, VK_NUMPAD2,
+                GetAsyncKeyState, VIRTUAL_KEY, VK_END, VK_NUMPAD1, VK_NUMPAD2, VK_NUMPAD3,
             },
             WindowsAndMessaging::{MessageBoxA, MESSAGEBOX_STYLE},
         },
@@ -28,7 +28,7 @@ extern "system" fn DllMain(hmodule: HINSTANCE, call_reason: u32, _: *const ()) -
     match call_reason {
         DLL_PROCESS_ATTACH => {
             let hmodule = HModule(hmodule);
-            std::thread::spawn(move || main(hmodule));
+            std::thread::spawn(move || unsafe { main(hmodule) });
         }
         _ => {}
     }
@@ -36,37 +36,39 @@ extern "system" fn DllMain(hmodule: HINSTANCE, call_reason: u32, _: *const ()) -
     BOOL(1)
 }
 
-fn main(hmodule: HModule) {
-    unsafe {
-        let Ok(module_base) = GetModuleHandleA(pcstr("Tutorial-x86_64.exe")) else {
-            return;
-        };
-        let module_base = module_base.0 as usize;
+unsafe fn main(hmodule: HModule) {
+    let Ok(module_base) = GetModuleHandleA(pcstr("Tutorial-x86_64.exe")) else {
+        return;
+    };
+    let module_base = module_base.0 as usize;
 
-        let Ok(_) = AllocConsole() else {
-            return;
-        };
+    let Ok(_) = AllocConsole() else {
+        return;
+    };
 
-        print_menu();
+    print_menu();
 
-        let mut running = true;
-        while running {
-            if pressed(VK_NUMPAD2) {
-                solve_step2(module_base);
-            }
-
-            if pressed(VK_END) {
-                running = false;
-            }
-
-            std::thread::sleep(Duration::from_millis(10));
+    let mut running = true;
+    while running {
+        if pressed(VK_NUMPAD2) {
+            solve_step2(module_base);
         }
 
-        let Ok(_) = FreeConsole() else {
-            return;
-        };
-        FreeLibraryAndExitThread(hmodule.0, 0);
+        if pressed(VK_NUMPAD3) {
+            solve_step3(module_base);
+        }
+
+        if pressed(VK_END) {
+            running = false;
+        }
+
+        std::thread::sleep(Duration::from_millis(10));
     }
+
+    let Ok(_) = FreeConsole() else {
+        return;
+    };
+    FreeLibraryAndExitThread(hmodule.0, 0);
 }
 
 unsafe fn solve_step2(base: usize) {
@@ -76,6 +78,19 @@ unsafe fn solve_step2(base: usize) {
         let health_addr = health_addr as *mut u32;
         println!("health before: {}", *health_addr);
         *health_addr = 1000;
+        println!("health after : {}", *health_addr);
+    } else {
+        println!("null pointer");
+    }
+}
+
+unsafe fn solve_step3(base: usize) {
+    println!("solving step 3");
+    if let Some(health_addr) = deref_pointer_path(base + 0x00325A80, &[0x7F8]) {
+        println!("{health_addr:#010X}");
+        let health_addr = health_addr as *mut u32;
+        println!("health before: {}", *health_addr);
+        *health_addr = 5000;
         println!("health after : {}", *health_addr);
     } else {
         println!("null pointer");
