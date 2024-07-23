@@ -42,6 +42,63 @@
       </Offsets>
     </CheatEntry>
     <CheatEntry>
+      <ID>25</ID>
+      <Description>"Step 5 Value"</Description>
+      <ShowAsSigned>0</ShowAsSigned>
+      <VariableType>4 Bytes</VariableType>
+      <Address>"Tutorial-x86_64.exe"+325AB0</Address>
+      <Offsets>
+        <Offset>0</Offset>
+        <Offset>7E0</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>26</ID>
+      <Description>"Step 5 Script"</Description>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>define(address,"Tutorial-x86_64.exe"+2CB88)
+define(bytes,89 10 48 8B 45 F0)
+
+[ENABLE]
+
+address:
+  nop 2
+
+[DISABLE]
+
+address:
+  mov [rax],edx
+
+{
+// ORIGINAL CODE - INJECTION POINT: Tutorial-x86_64.exe+2CB88
+
+Tutorial-x86_64.exe+2CB65: 49 89 E8              - mov r8,rbp
+Tutorial-x86_64.exe+2CB68: E8 43 8E FE FF        - call Tutorial-x86_64.exe+159B0
+Tutorial-x86_64.exe+2CB6D: 0F 1F 00              - nop dword ptr [rax]
+Tutorial-x86_64.exe+2CB70: 8B 45 E8              - mov eax,[rbp-18]
+Tutorial-x86_64.exe+2CB73: 3B 45 EC              - cmp eax,[rbp-14]
+Tutorial-x86_64.exe+2CB76: 74 B0                 - je Tutorial-x86_64.exe+2CB28
+Tutorial-x86_64.exe+2CB78: EB 00                 - jmp Tutorial-x86_64.exe+2CB7A
+Tutorial-x86_64.exe+2CB7A: 48 8B 45 F0           - mov rax,[rbp-10]
+Tutorial-x86_64.exe+2CB7E: 48 8B 80 E0 07 00 00  - mov rax,[rax+000007E0]
+Tutorial-x86_64.exe+2CB85: 8B 55 E8              - mov edx,[rbp-18]
+// ---------- INJECTING HERE ----------
+Tutorial-x86_64.exe+2CB88: 89 10                 - mov [rax],edx
+// ---------- DONE INJECTING  ----------
+Tutorial-x86_64.exe+2CB8A: 48 8B 45 F0           - mov rax,[rbp-10]
+Tutorial-x86_64.exe+2CB8E: 48 8B 80 E0 07 00 00  - mov rax,[rax+000007E0]
+Tutorial-x86_64.exe+2CB95: 8B 00                 - mov eax,[rax]
+Tutorial-x86_64.exe+2CB97: 3B 45 EC              - cmp eax,[rbp-14]
+Tutorial-x86_64.exe+2CB9A: 74 02                 - je Tutorial-x86_64.exe+2CB9E
+Tutorial-x86_64.exe+2CB9C: EB 22                 - jmp Tutorial-x86_64.exe+2CBC0
+Tutorial-x86_64.exe+2CB9E: 48 8B 45 F0           - mov rax,[rbp-10]
+Tutorial-x86_64.exe+2CBA2: 48 8B 88 C0 07 00 00  - mov rcx,[rax+000007C0]
+Tutorial-x86_64.exe+2CBA9: B2 01                 - mov dl,01
+Tutorial-x86_64.exe+2CBAB: 48 8B 45 F0           - mov rax,[rbp-10]
+}
+</AssemblerScript>
+    </CheatEntry>
+    <CheatEntry>
       <ID>9</ID>
       <Description>"Step 6 Value"</Description>
       <ShowAsSigned>0</ShowAsSigned>
@@ -153,6 +210,69 @@ dealloc(newmem)
         <Offset>8</Offset>
         <Offset>8A0</Offset>
       </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>27</ID>
+      <Description>"Step 9 Script"</Description>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>define(address,"Tutorial-x86_64.exe"+2F25D)
+define(bytes,F3 0F 11 43 08)
+
+[ENABLE]
+
+assert(address,bytes)
+alloc(newmem,$1000,"Tutorial-x86_64.exe"+2F25D)
+
+label(code)
+label(return)
+
+newmem:
+  cmp [rbx+14],1
+  je return
+code:
+  movss [rbx+08],xmm0
+  jmp return
+
+address:
+  jmp newmem
+return:
+
+[DISABLE]
+
+address:
+  db bytes
+  // movss [rbx+08],xmm0
+
+dealloc(newmem)
+
+{
+// ORIGINAL CODE - INJECTION POINT: Tutorial-x86_64.exe+2F25D
+
+Tutorial-x86_64.exe+2F233: E9 97 00 00 00           - jmp Tutorial-x86_64.exe+2F2CF
+Tutorial-x86_64.exe+2F238: F3 0F 2A C6              - cvtsi2ss xmm0,esi
+Tutorial-x86_64.exe+2F23C: F3 0F 10 4B 08           - movss xmm1,[rbx+08]
+Tutorial-x86_64.exe+2F241: F3 0F 5C C8              - subss xmm1,xmm0
+Tutorial-x86_64.exe+2F245: 0F 2F 0D 8C 87 20 00     - comiss xmm1,[Tutorial-x86_64.exe+2379D8]
+Tutorial-x86_64.exe+2F24C: 7A 0C                    - jp Tutorial-x86_64.exe+2F25A
+Tutorial-x86_64.exe+2F24E: 73 0A                    - jae Tutorial-x86_64.exe+2F25A
+Tutorial-x86_64.exe+2F250: F3 0F 10 05 80 87 20 00  - movss xmm0,[Tutorial-x86_64.exe+2379D8]
+Tutorial-x86_64.exe+2F258: EB 03                    - jmp Tutorial-x86_64.exe+2F25D
+Tutorial-x86_64.exe+2F25A: 0F 28 C1                 - movaps xmm0,xmm1
+// ---------- INJECTING HERE ----------
+Tutorial-x86_64.exe+2F25D: F3 0F 11 43 08           - movss [rbx+08],xmm0
+// ---------- DONE INJECTING  ----------
+Tutorial-x86_64.exe+2F262: 0F 2F 05 6F 87 20 00     - comiss xmm0,[Tutorial-x86_64.exe+2379D8]
+Tutorial-x86_64.exe+2F269: 7A 14                    - jp Tutorial-x86_64.exe+2F27F
+Tutorial-x86_64.exe+2F26B: 75 12                    - jne Tutorial-x86_64.exe+2F27F
+Tutorial-x86_64.exe+2F26D: 48 8B 4B 60              - mov rcx,[rbx+60]
+Tutorial-x86_64.exe+2F271: 48 8B 15 C0 B9 18 00     - mov rdx,[Tutorial-x86_64.exe+1BAC38]
+Tutorial-x86_64.exe+2F278: E8 E3 D7 07 00           - call Tutorial-x86_64.exe+ACA60
+Tutorial-x86_64.exe+2F27D: EB 42                    - jmp Tutorial-x86_64.exe+2F2C1
+Tutorial-x86_64.exe+2F27F: F3 0F 10 4B 08           - movss xmm1,[rbx+08]
+Tutorial-x86_64.exe+2F284: 48 8D 4D E0              - lea rcx,[rbp-20]
+Tutorial-x86_64.exe+2F288: E8 63 BD 01 00           - call Tutorial-x86_64.exe+4AFF0
+}
+</AssemblerScript>
     </CheatEntry>
   </CheatEntries>
   <UserdefinedSymbols/>
