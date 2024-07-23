@@ -27,3 +27,15 @@ pub unsafe fn nop(dest: *mut c_void, size: usize) -> windows::core::Result<()> {
 
     Ok(())
 }
+
+pub unsafe fn patch(dest: *mut c_void, data: &[u8]) -> windows::core::Result<()> {
+    let mut old = PAGE_PROTECTION_FLAGS(0);
+
+    VirtualProtect(dest, data.len(), PAGE_EXECUTE_READWRITE, &mut old as *mut _)?;
+
+    dest.copy_from(data.as_ptr() as *const _, data.len());
+
+    VirtualProtect(dest, data.len(), old, &mut old as *mut _)?;
+
+    Ok(())
+}
