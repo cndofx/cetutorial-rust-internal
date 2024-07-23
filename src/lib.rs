@@ -1,4 +1,4 @@
-use std::{ffi::c_void, time::Duration};
+use std::time::Duration;
 
 use windows::{
     core::PCSTR,
@@ -16,9 +16,18 @@ use windows::{
     },
 };
 
-use mem::{deref_pointer_path, nop, patch};
+use steps::{
+    step2::write_step2,
+    step3::write_step3,
+    step4::write_step4,
+    step5::{nop_step5, restore_step5},
+    step6::write_step6,
+    step7::{patch_step7, restore_step7},
+    step8::write_step8,
+};
 
 mod mem;
+mod steps;
 
 struct HModule(HINSTANCE);
 
@@ -177,87 +186,6 @@ unsafe fn main(hmodule: HModule) {
         return;
     };
     FreeLibraryAndExitThread(hmodule.0, 0);
-}
-
-unsafe fn write_step2(base: usize) {
-    if let Some(health_addr) = deref_pointer_path(base + 0x00325A70, &[0x7F8]) {
-        let health_addr = health_addr as *mut u32;
-        *health_addr = 1000;
-    }
-}
-
-unsafe fn write_step3(base: usize) {
-    if let Some(health_addr) = deref_pointer_path(base + 0x00325A80, &[0x7F8]) {
-        let health_addr = health_addr as *mut u32;
-        *health_addr = 5000;
-    }
-}
-
-unsafe fn write_step4(base: usize) {
-    if let Some(health_addr) = deref_pointer_path(base + 0x00325AA0, &[0x818]) {
-        let health_addr = health_addr as *mut f32;
-        *health_addr = 5000.0;
-    }
-    if let Some(ammo_addr) = deref_pointer_path(base + 0x00325AA0, &[0x820]) {
-        let ammo_addr = ammo_addr as *mut f64;
-        *ammo_addr = 5000.0;
-    }
-}
-
-unsafe fn nop_step5(base: usize) {
-    let addr = base + 0x0002CB88;
-    if let Ok(_) = nop(addr as *mut c_void, 2) {
-        println!("nopped instructions");
-    } else {
-        println!("unable to nop instructions");
-    }
-}
-
-unsafe fn restore_step5(base: usize) {
-    let addr = base + 0x0002CB88;
-    if let Ok(_) = patch(addr as *mut c_void, &[0x89, 0x10]) {
-        println!("restored instructions");
-    } else {
-        println!("unable to restore instructions");
-    }
-}
-
-unsafe fn write_step6(base: usize) {
-    if let Some(addr) = deref_pointer_path(base + 0x00325AD0, &[0x0]) {
-        let addr = addr as *mut u32;
-        *addr = 5000;
-    }
-}
-
-unsafe fn patch_step7(base: usize) {
-    let addr = base + 0x0002DB57;
-    if let Ok(_) = patch(
-        addr as *mut c_void,
-        &[0x83, 0x86, 0xE0, 0x07, 0x00, 0x00, 0x02],
-    ) {
-        println!("patched instructions");
-    } else {
-        println!("unable to patch instructions");
-    }
-}
-
-unsafe fn restore_step7(base: usize) {
-    let addr = base + 0x0002DB57;
-    if let Ok(_) = patch(
-        addr as *mut c_void,
-        &[0x83, 0xAE, 0xE0, 0x07, 0x00, 0x00, 0x01],
-    ) {
-        println!("restored instructions");
-    } else {
-        println!("unable to restore instructions");
-    }
-}
-
-unsafe fn write_step8(base: usize) {
-    if let Some(addr) = deref_pointer_path(base + 0x00325B00, &[0x10, 0x18, 0x0, 0x18]) {
-        let addr = addr as *mut u32;
-        *addr = 5000;
-    }
 }
 
 fn print_menu() {
